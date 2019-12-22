@@ -51,7 +51,7 @@ def getCoeff (file_name) :
         coeff.append(float(words[i]))
     return np.asarray(coeff)
 
-def TwoSignificantPowerTen (Number):
+def PowerTen (Number):
     """
     Returns a number in power ten representation in form of an array, 
     with the power of ten in the second case and the number multiplied 
@@ -85,7 +85,7 @@ def PolynomialM(params) :
         p           = ceil((-3 + np.sqrt(1 + 8*k))/2)
         x_exp       = int(k - 1 - p*(p+1)/2)
         n_exp       = int(1 - k + p*(p+3)/2)
-        coeff_value = TwoSignificantPowerTen(params[n_params -(k-1) -1]) 
+        coeff_value = PowerTen(params[n_params -(k-1) -1]) 
         
         matrix[n_exp][x_exp] = float(format(-coeff_value[0], '.3f') + 'e' + \
                                str(int(coeff_value[1])))
