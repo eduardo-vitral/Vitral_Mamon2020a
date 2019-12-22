@@ -4,6 +4,7 @@ This concerns the deprojection of the Sérsic model (Sérsic 1963; Sersic 1968) 
 The main files are:
 
 CODES:
+
 sersic_grid_num.py : Calculates the numerical deprojection of the Sérsic model, as well as 
 the analytical approximation by Lima Neto, Gerbal & Márquez 1999. Then it fits a polynomial 
 to the ratio log(f_LGM/f_numerical) and saves the coefficients.
@@ -20,6 +21,7 @@ Emsellem & van de Ven 2008
 create_table_coeff.py : Creates a text file with the table corresponding to the polynomial fits.
 
 OTHER FILES:
+
 dens_num.npy, dens_num1000.npy, mass_num.npy, mass_num1000.npy : Numerical calculated values 
 for different grids of volume density and mass.
 
@@ -28,6 +30,6 @@ coeff_1.txt, coeff_2.txt : Raw files containing the results of the polynomial fi
 coeff_dens.txt, coeff_mass.txt : Tables containing the results of the polynomial fits.
 
 *** The results and codes here all use the Ciotti & Bertin 1999 approximation for the 
-Sérsic parameter, b_n. For the results with the numerical results from equation 2 from
-Vitral &amp; Mamon 2020a, please email vitral@iap.fr.
+Sérsic parameter, b_n. For the results and codes with the numerical results from equation 2 
+from Vitral &amp; Mamon 2020a, please email vitral@iap.fr.
 
