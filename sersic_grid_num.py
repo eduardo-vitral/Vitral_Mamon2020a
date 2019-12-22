@@ -412,7 +412,8 @@ func  = [nu_numRat, Mass_Rat]
 if (lin_method == True) :
     # WARNING: Removes previous .txt files to avoid overwriting
     for file in glob.glob("*.txt"):
-        os.remove(file)
+        if('coeff_1' in file or 'coeff_2' in file) :
+            os.remove(file)
             
     for k in range(0,len(model)) :
         
