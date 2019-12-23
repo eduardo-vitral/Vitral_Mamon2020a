@@ -1,8 +1,6 @@
 """
 Created on 2019
-
 @author: Eduardo Vitral
-
 """
 
 ###############################################################################
@@ -412,9 +410,9 @@ func  = [nu_numRat, Mass_Rat]
 if (lin_method == True) :
     # WARNING: Removes previous .txt files to avoid overwriting
     for file in glob.glob("*.txt"):
-        if('coeff_1' == file or 'coeff_2' == file) :
+        if('coeff_1.txt' == file or 'coeff_2.txt' == file) :
             os.remove(file)
-            
+
     for k in range(0,len(model)) :
         
         t1_start = time.perf_counter()
@@ -433,4 +431,3 @@ if (lin_method == True) :
                 print(coeff[j], file=f)
                 
         print('\n\n')   
-
