@@ -230,7 +230,7 @@ def pLN(n) :
     Formula from Lima Neto, Gerbal & Márquez 1999, (LGM99)
     
     """
-    p = 1 - 0.6097/n + 0.05563/(n**2)
+    p = 1 - 0.6097/n + 0.05463/(n**2)
     return p
 
 def b(n) :

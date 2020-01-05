@@ -41,7 +41,9 @@ m_right = np.log10(10)  # Final value of log(n)
 steps_n = 1000          # Number of log(n) bins
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+#---------------------------------------------------------------------------
+"General functions"
+#---------------------------------------------------------------------------
 def getTru(n,int_method,func) :
     """
     Gets the interpolated parameters from Trujillo et al. 2002 (T+02) density
