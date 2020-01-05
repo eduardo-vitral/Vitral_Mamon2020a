@@ -60,7 +60,7 @@ BIG  = 1e30
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #---------------------------------------------------------------------------
-"Numerical calculation of nu(r/R_e)"
+"General functions"
 #---------------------------------------------------------------------------
 
 def ReadFile (file_name) :
@@ -120,7 +120,7 @@ def intersect2d(arr1,arr2) :
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #---------------------------------------------------------------------------
-"Sersic deprojections formulae"
+"Mass/density formulae"
 #---------------------------------------------------------------------------
 
 def integrand(x,n,r0) :
@@ -484,23 +484,17 @@ M_Sim = getMSimm(eta,m)
 M_LN  = getMm(eta,m,'LN')
 M_PS  = getMm(eta,m,'PS')
 
-# Gets the ratio between different models and the numerical deprojection
-nu_numRat1 = nu_Sim/nu_num
-nu_numRat2 = nu_Tru/nu_num
-nu_numRat3 = nu_LN/nu_num
-nu_numRat4 = nu_EG/nu_num
-
 # Gets the ratio between the model proposed on Vitral & Mamon 2020a
 # and the numerical deprojection
 LOGM_numRatVM = np.log10(M_LN/M_num) - Polynomial(eta,m,coeff_M)
-LOGnu_numRatVM = np.log10(nu_numRat3) - Polynomial(eta,m,coeff_nu)
+LOGnu_numRatVM = np.log10(nu_LN/nu_num) - Polynomial(eta,m,coeff_nu)
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #---------------------------------------------------------------------------
 "Checking the fit"
 #---------------------------------------------------------------------------
 
-# Creates a personal colormap
+# Creates personal colormaps in shades of gray, yellow and red
 n_bins    = 1000
 colors    = [(0,0,50/255),(102/255,178/255,1),(1,1,1),
              (1,102/255,102/255),(50/255,0,0)]
@@ -509,34 +503,47 @@ rainbow   = LinearSegmentedColormap.from_list(cmap_name,colors,N=n_bins)
 
 color = rainbow
 
-labels = [r"$\log \left[ \widetilde{\rho}_{\mathrm{LGM}} \, / \, " + 
+labels = [r"$\log \left[ \widetilde{\rho}_{\mathrm{PS}} \, / \, " + 
+          r"\widetilde{\rho} \right]$",
+          r"$\log \left[ \widetilde{\rho}_{\mathrm{Trujillo+02}} \, / \, " + \
           r"\widetilde{\rho} \right]$",
           r"$\log \left[ \widetilde{\rho}_{\mathrm{SP}} \, / \, " + \
+          r"\widetilde{\rho} \right]$",
+          r"$\log \left[ \widetilde{\rho}_{\mathrm{LGM}} \, / \, " + \
           r"\widetilde{\rho} \right]$",
           r"$\log \left[ \widetilde{\rho}_{\mathrm{EV}} \, / \, " + \
           r"\widetilde{\rho} \right]$",
           r"$\log \left[ \widetilde{\rho}_{\mathrm{new}} \, / \, " + \
-          r"\widetilde{\rho} \right]$"]
-func   = [np.log10(nu_numRat3),np.log10(nu_numRat1),np.log10(nu_numRat4),
-          LOGnu_numRatVM]
+          r"\widetilde{\rho} \right]$",
+          r"$\log \left[ \widetilde{M}_{\mathrm{LGM}} \, / \, " + 
+          r"\widetilde{M} \right]$",
+          r"$\log \left[ \widetilde{M}_{\mathrm{SP}} \, / \, " + \
+          r"\widetilde{M} \right]$",
+          r"$\log \left[ \widetilde{M}_{\mathrm{new}} \, / \, " + \
+          r"\widetilde{M} \right]$"]
+func = [np.log10(nu_PS/nu_num),np.log10(nu_Tru/nu_num),np.log10(nu_Sim/nu_num),
+        np.log10(nu_LN/nu_num),np.log10(nu_EG/nu_num),LOGnu_numRatVM,
+        np.log10(M_LN/M_num),np.log10(M_Sim/M_num),LOGM_numRatVM]
 v_min  = -0.1
 v_max  = 0.1
 
-fig, axs = plt.subplots(2,2, figsize=(7, 7), facecolor='w', edgecolor='k', 
+fig, axs = plt.subplots(3,3, figsize=(12, 12), facecolor='w', edgecolor='k', \
                         sharey = True)
 fig.subplots_adjust(hspace = .4, wspace=.35)
 axs = axs.ravel()
 for i in range(0,len(axs)) :
     
-    axs[i].tick_params(labeltop=False, labelright=False, top = True, 
-                    right = True,
-                    axis='both', which='major', labelsize=13, direction="in", 
+    axs[i].tick_params(labeltop=False, labelright=False, top = True, right = True, \
+                    axis='both', which='major', labelsize=13, direction="in", \
                     length = 8)
-    axs[i].tick_params(labeltop=False, labelright=False, top = True,
-                    right = True, 
-                    axis='both', which='minor', labelsize=13, direction="in", 
+    axs[i].tick_params(labeltop=False, labelright=False, top = True, right = True, \
+                    axis='both', which='minor', labelsize=13, direction="in", \
                     length = 4)
-    axs[i].set_title(labels[i], fontsize = 17, pad = 10)
+    if ('new' in labels[i]) :
+        axs[i].set_title(labels[i], fontsize = 17, pad = 10, 
+                         color=(190/255,0,0))
+    else :
+        axs[i].set_title(labels[i], fontsize = 17, pad = 10)
     axs[i].set_yscale('log')
     axs[i].set_xscale('log')
     axs[i].set_facecolor('lightgray')
@@ -549,63 +556,13 @@ for i in range(0,len(axs)) :
     cbar.ax.tick_params(labelsize=12.5) 
 
 # Set common labels
-fig.text(0.5, 0.05, '$n$', ha='center', va='center', 
-         fontsize = 17)
-fig.text(0.02, 0.5, '$x = r \, / \, R_{e}$', ha='center', va='center', 
-         rotation='vertical', fontsize = 17)
-
-
-plt.savefig('Grid_Comp.pdf', format = 'pdf', bbox_inches="tight") 
-plt.show()
-
-
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-labels = [r"$\log \left[ \widetilde{M}_{\mathrm{LGM}} \, / \, " + 
-          r"\widetilde{M} \right]$",
-          r"$\log \left[ \widetilde{M}_{\mathrm{SP}} \, / \, " + \
-          r"\widetilde{M} \right]$",
-          r"$\log \left[ \widetilde{M}_{\mathrm{new}} \, / \, " + \
-          r"\widetilde{M} \right]$"]
-func   = [np.log10(M_LN/M_num),np.log10(M_Sim/M_num),
-          LOGM_numRatVM]
-v_min  = -0.1
-v_max  = 0.1
-
-fig, axs = plt.subplots(1,3, figsize=(12,3.2), facecolor='w', edgecolor='k',
-                        sharey = True)
-fig.subplots_adjust(hspace = .35, wspace=.3)
-axs = axs.ravel()
-for i in range(0,len(axs)) :
-    
-    axs[i].tick_params(labeltop=False, labelright=False, top = True, 
-                    right = True, 
-                    axis='both', which='major', labelsize=14, direction="in", 
-                    length = 8)
-    axs[i].tick_params(labeltop=False, labelright=False, top = True, 
-                    right = True, 
-                    axis='both', which='minor', labelsize=14, direction="in", 
-                    length = 4)
-    axs[i].set_title(labels[i], fontsize = 17, pad = 12)
-    axs[i].set_yscale('log')
-    axs[i].set_xscale('log')
-    axs[i].set_facecolor('lightgray')
-    c = axs[i].pcolor(m, eta, func[i], cmap = color,
-                      norm=SymLogNorm(linthresh=0.001, linscale=0.9,
-                                              vmin=v_min, vmax=v_max))
-    axs[i].set_xticks(np.asarray([0.5,1,2,5,10]))
-    axs[i].set_xticklabels(['$0.5$','$1$','$2$','$5$','$10$'])
-    cbar = fig.colorbar(c, ax = axs[i])
-    cbar.ax.tick_params(labelsize=13) 
-
-# Set common labels
-fig.text(0.5, -0.01, '$n$', ha='center', va='center', 
+fig.text(0.5, 0.07, '$n$', ha='center', va='center', 
          fontsize = 17)
 fig.text(0.07, 0.5, '$x = r \, / \, R_{e}$', ha='center', va='center', 
          rotation='vertical', fontsize = 17)
 
 
-plt.savefig('Grid_CompM.pdf', format = 'pdf', bbox_inches="tight") 
+plt.savefig('Grid_Comp.pdf', format = 'pdf', bbox_inches="tight") 
 plt.show()
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

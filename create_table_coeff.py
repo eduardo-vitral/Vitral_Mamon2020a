@@ -1,8 +1,6 @@
 """
 Created on 2019
-
 @author: Eduardo Vitral
-
 """
 ###############################################################################
 #
@@ -27,7 +25,7 @@ plt.rcParams['font.serif'] = ['Computer Modern Roman'] \
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #---------------------------------------------------------------------------
-"Numerical calculation of nu(r/R_e)"
+"General functions"
 #---------------------------------------------------------------------------
     
 def ReadFile (file_name) :
@@ -68,7 +66,7 @@ def PowerTen (Number):
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #---------------------------------------------------------------------------
-"Sersic deprojections formulae"
+"Formatting functions"
 #---------------------------------------------------------------------------
 
 def PolynomialM(params) :
@@ -86,9 +84,9 @@ def PolynomialM(params) :
         x_exp       = int(k - 1 - p*(p+1)/2)
         n_exp       = int(1 - k + p*(p+3)/2)
         coeff_value = PowerTen(params[n_params -(k-1) -1]) 
-        
-        matrix[n_exp][x_exp] = float(format(-coeff_value[0], '.3f') + 'e' + \
-                               str(int(coeff_value[1])))
+
+        matrix[n_exp][x_exp] = float("{: .3f}".format(-coeff_value[0]) + \
+                               'e' + str(int(coeff_value[1])))
     
     return matrix
 
@@ -117,7 +115,7 @@ def writeInFile (data,Name) :
         table.write("\n")
     
     table.close()
-
+    
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #---------------------------------------------------------------------------
 "main"
@@ -134,4 +132,3 @@ coeff_M  = PolynomialM(coeff_M)
 # Writes the coefficients in a file
 writeInFile(coeff_nu,'coeff_dens.txt')
 writeInFile(coeff_M,'coeff_mass.txt')
-
