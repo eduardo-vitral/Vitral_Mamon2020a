@@ -555,7 +555,8 @@ plt.tick_params(labeltop=False, labelright=False, top = True, right = True, \
 plt.tick_params(labeltop=False, labelright=False, top = True, right = True, \
                 axis='both', which='minor', labelsize=18, direction="in", \
                 length = 4)
-nu_1
+# Builds a list of the rms values for further analysis
+rms_arrays = list()
 for i in range(0,len(colors)):
     ratio = np.log10(func[i])
     rms   = np.zeros(len(m))
@@ -570,7 +571,7 @@ for i in range(0,len(colors)):
         bigger   = np.where(nu_num[:,j] > nu_1[0][j]/BIG)
         not_zero = np.intersect1d(not_zero,bigger)
         rms[j] = np.sqrt(np.mean((diff[not_zero])**2))
-   
+    rms_arrays.append(rms)
     plt.loglog(m,rms, lw=3, color=colors[i])
     
     if (model[i] == '\mathrm{LGM}' or model[i] == '\mathrm{new}' or
@@ -590,6 +591,7 @@ for i in range(0,len(colors)):
             rms[j] = np.sqrt(np.mean((diff[not_zero])**2))
        
         plt.loglog(m,rms, lw=3, color=colors[i], linestyle='--',dashes=(4, 4))
+        rms_arrays.append(rms)
     
 lines = axes.get_lines()
 legend1 = plt.legend([lines[i] for i in [5,6]], [r"$f = \rho$", 
@@ -606,9 +608,30 @@ plt.ylabel(r"$\mathrm{rms} \ \log " + \
            r"\, \widetilde{f} \right)$", fontsize = 18)
 plt.xlim([m[0],m[len(m)-1]])
 plt.ylim([1e-6,10])
-plt.xticks(np.asarray([0.5,1,2,3,5,10]),
-           ['$0.5$','$1$','$2$','$3$','$5$','$10$'])
+plt.xticks(np.asarray([0.5,1,1.5,2,3,4,5,10]),
+           ['$0.5$','$1$','$1.5$','$2$','$3$','$4$','$5$','$10$'])
 plt.grid()
 plt.minorticks_on()
 plt.savefig('RMScomp.pdf', format = 'pdf', bbox_inches="tight") 
 plt.show()
+
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# Here, we check were our new models start to become continuously worse than
+# the approximations of SP04 and EV08
+
+# For SP04 density profile
+idx_SP = np.nanargmin(np.abs(rms_arrays[2]-rms_arrays[5]))
+print('Index n where SP04 is better than our density model:', 
+      round(m[idx_SP],2))
+# For SP04 mass profile
+idx_SPm = np.nanargmin(np.abs(rms_arrays[3]-rms_arrays[6]))
+print('Index n where SP04 is better than our mass model:   ', 
+      round(m[idx_SPm],2))
+# For EV08 density profile, disconsidering the oscillation pattern for low n
+idx_4  = np.nanargmin(np.abs(m-3.05))
+#print(m[idx_4],idx_4)
+idx_EV = np.nanargmin(np.abs(rms_arrays[4][idx_4:len(rms_arrays[4])] - \
+                             rms_arrays[5][idx_4:len(rms_arrays[5])]))
+print('Index n where EV08 is better than our density model:', 
+      round(m[idx_4:len(rms_arrays[4])][idx_EV],2))
