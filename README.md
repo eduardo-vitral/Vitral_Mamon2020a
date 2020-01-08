@@ -20,9 +20,14 @@ Emsellem & van de Ven 2008
 
 create_table_coeff.py : Creates a text file with the table corresponding to the polynomial fits.
 
+einasto_comp.py : Compares the Einasto (1965) profile with the deprojected Sersic profile.
+
+other_models_comp.py : Compares the deprojected Sersic profile with the models from Plummer (1911),
+Jaffe (1983), Hernquist (1990) and Navarro et al. (1996).
+
 OTHER FILES:
 
-dens_num.npy, dens_num1000.npy, mass_num.npy, mass_num1000.npy : Numerical calculated values 
+dens_num.npy, dens_num1000.npy, mass_num.npy, mass_num1000.npy, nu_rh.npy : Numerical calculated values 
 for different grids of volume density and mass.
 
 coeff_1.txt, coeff_2.txt : Raw files containing the results of the polynomial fits.
