@@ -491,8 +491,49 @@ LOGnu_numRatVM = np.log10(nu_LN/nu_num) - Polynomial(eta,m,coeff_nu)
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #---------------------------------------------------------------------------
+"Residuals RMS"
+#---------------------------------------------------------------------------
+# Gets the RMS of the ratio between each model and the numerical 
+# deprojection over all the grid. Prints first 4 decimal digits
+
+RMS_LN  = model_RMS(nu_LN,nu_num)
+RMS_SP  = model_RMS(nu_Sim,nu_num)
+RMS_EG  = model_RMS(nu_EG,nu_num)
+RMS_PS  = model_RMS(nu_PS,nu_num)
+RMS_Tru = model_RMS(nu_Tru,nu_num)
+RMS_new = model_RMS(nu_num * 10**LOGnu_numRatVM,nu_num)
+
+print('RMS_PS, density :', round(RMS_PS,4))
+print('RMS_LGM, density:',round(RMS_LN,4))
+print('RMS_SP, density :', round(RMS_SP,4))
+print('RMS_Tru, density:', round(RMS_Tru,4))
+print('RMS_EV, density :', round(RMS_EG,4))
+print('RMS_new, density:', round(RMS_new,4))
+
+RMS_LNm  = model_RMS(M_LN,M_num)
+RMS_SPm  = model_RMS(M_Sim,M_num)
+RMS_PSm  = model_RMS(M_PS,M_num)
+RMS_newm = model_RMS(M_num * 10**LOGM_numRatVM,M_num)
+print('\n\n')
+print('RMS_PS, mass :', round(RMS_PSm,4))
+print('RMS_LGM, mass:',round(RMS_LNm,4))
+print('RMS_SP, mass :', round(RMS_SPm,4))
+print('RMS_new, mass:', round(RMS_newm,4))
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#---------------------------------------------------------------------------
 "Checking the fit"
 #---------------------------------------------------------------------------
+
+nu_1    = getNU(1,m)
+idx_rho = np.zeros(len(m)).astype(int) 
+BIG     = 1e30
+for i in range(0,len(m)) :
+    idx_rho[i] = np.argmin(np.abs(nu_1[i]/BIG-nu_num[:,i]))
+r_30    = np.where(eta[idx_rho] < np.amax(eta))
+
+idx_rho = idx_rho[r_30]
+idx_rho = np.append(idx_rho,len(eta)-1)      
 
 # Creates personal colormaps in shades of gray, yellow and red
 n_bins    = 1000
@@ -541,7 +582,7 @@ for i in range(0,len(axs)) :
                     length = 4)
     if ('new' in labels[i]) :
         axs[i].set_title(labels[i], fontsize = 17, pad = 10, 
-                         color=(190/255,0,0))
+                         color='green')#(190/255,0,0))
     else :
         axs[i].set_title(labels[i], fontsize = 17, pad = 10)
     axs[i].set_yscale('log')
@@ -550,6 +591,8 @@ for i in range(0,len(axs)) :
     c = axs[i].pcolor(m, eta, func[i], cmap = color,
                       norm=SymLogNorm(linthresh=0.001, linscale=0.9,
                                               vmin=v_min, vmax=v_max))
+    # Plots a green line corresponding to where rho(r) = rho(R_e) x 10^{-30}
+    axs[i].loglog(m[np.arange(len(idx_rho))], eta[idx_rho],color='green',lw=3)
     axs[i].set_xticks(np.asarray([0.5,1,2,5,10]))
     axs[i].set_xticklabels(['$0.5$','$1$','$2$','$5$','$10$'])
     cbar = fig.colorbar(c, ax = axs[i])
@@ -558,41 +601,10 @@ for i in range(0,len(axs)) :
 # Set common labels
 fig.text(0.5, 0.07, '$n$', ha='center', va='center', 
          fontsize = 17)
-fig.text(0.07, 0.5, '$x = r \, / \, R_{e}$', ha='center', va='center', 
+fig.text(0.07, 0.5, '$r \, / \, R_{e}$', ha='center', va='center', 
          rotation='vertical', fontsize = 17)
 
 
 plt.savefig('Grid_Comp.pdf', format = 'pdf', bbox_inches="tight") 
 plt.show()
-
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-#---------------------------------------------------------------------------
-"Residuals RMS"
-#---------------------------------------------------------------------------
-# Gets the RMS of the ratio between each model and the numerical 
-# deprojection over all the grid. Prints first 4 decimal digits
-
-RMS_LN  = model_RMS(nu_LN,nu_num)
-RMS_SP  = model_RMS(nu_Sim,nu_num)
-RMS_EG  = model_RMS(nu_EG,nu_num)
-RMS_PS  = model_RMS(nu_PS,nu_num)
-RMS_Tru = model_RMS(nu_Tru,nu_num)
-RMS_new = model_RMS(nu_num * 10**LOGnu_numRatVM,nu_num)
-
-print('RMS_PS, density :', round(RMS_PS,4))
-print('RMS_LGM, density:',round(RMS_LN,4))
-print('RMS_SP, density :', round(RMS_SP,4))
-print('RMS_Tru, density:', round(RMS_Tru,4))
-print('RMS_EV, density :', round(RMS_EG,4))
-print('RMS_new, density:', round(RMS_new,4))
-
-RMS_LNm  = model_RMS(M_LN,M_num)
-RMS_SPm  = model_RMS(M_Sim,M_num)
-RMS_PSm  = model_RMS(M_PS,M_num)
-RMS_newm = model_RMS(M_num * 10**LOGM_numRatVM,M_num)
-print('\n\n')
-print('RMS_PS, mass :', round(RMS_PSm,4))
-print('RMS_LGM, mass:',round(RMS_LNm,4))
-print('RMS_SP, mass :', round(RMS_SPm,4))
-print('RMS_new, mass:', round(RMS_newm,4))
 
