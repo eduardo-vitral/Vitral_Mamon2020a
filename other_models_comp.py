@@ -237,3 +237,4 @@ plt.xlabel(r'$r \, / \, r_{\mathrm{h}}$',fontsize=21)
 #plt.grid()
 plt.savefig(r'OtherModels.pdf', format = 'pdf', bbox_inches="tight")
 plt.show()
+
